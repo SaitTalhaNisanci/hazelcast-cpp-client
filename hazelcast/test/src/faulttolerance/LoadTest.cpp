@@ -123,7 +123,7 @@ namespace hazelcast {
                     IMap<int, int> imap = client.getMap<int, int>("loadtest");
 
                     int numThreads = 40;
-                    int numOps = 5000;
+                    int numOps = 1000;
 
                     util::CountDownLatch startLatch(numThreads);
 
@@ -157,14 +157,14 @@ namespace hazelcast {
                             "[LoadTest::loadIntMapTestWithConfig] Finished the test successfully :)");
                 }
 
-                TEST_F(LoadTest, DISABLED_testIntMapSmartClientServerRestart) {
+                TEST_F(LoadTest, testIntMapSmartClientServerRestart) {
                     std::auto_ptr<ClientConfig> config = getLoadTestConfig();
                     config->setSmart(true);
 
                     loadIntMapTestWithConfig(*config, *this);
                 }
 
-                TEST_F(LoadTest, DISABLED_testIntMapDummyClientServerRestart) {
+                TEST_F(LoadTest, testIntMapDummyClientServerRestart) {
                     std::auto_ptr<ClientConfig> config = getLoadTestConfig();
                     config->setSmart(false);
 
