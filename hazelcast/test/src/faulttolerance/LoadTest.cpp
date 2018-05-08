@@ -28,11 +28,9 @@
 #include "hazelcast/util/Runnable.h"
 #include "hazelcast/util/Thread.h"
 #include "hazelcast/util/CountDownLatch.h"
-#include "hazelcast/util/ILogger.h"
 #include "ClientTestSupport.h"
 #include "hazelcast/client/IMap.h"
 #include "hazelcast/client/HazelcastClient.h"
-#include "hazelcast/client/ClientConfig.h"
 
 namespace hazelcast {
     namespace client {
@@ -43,7 +41,6 @@ namespace hazelcast {
                     std::auto_ptr<hazelcast::client::ClientConfig> getLoadTestConfig() {
                         std::auto_ptr<ClientConfig> config = ClientTestSupport::getConfig();
                         config->setRedoOperation(true);
-                        config->setLogLevel(FINEST);
                         return config;
                     }
 
@@ -133,19 +130,20 @@ namespace hazelcast {
 
                     test.startThreads();
 
-                    startLatch.await(20);
+                    ASSERT_TRUE(startLatch.await(20));
 
-                    util::ILogger::getLogger().info(
+                    util::ILogger &logger = util::ILogger::getLogger();
+                    logger.info(
                             "[LoadTest::loadIntMapTestWithConfig] Shutting down server instance 1");
                     instance1.shutdown();
-                    util::ILogger::getLogger().info(
+                    logger.info(
                             "[LoadTest::loadIntMapTestWithConfig] Shutting down server instance 2");
                     instance2.shutdown();
-                    util::ILogger::getLogger().info(
+                    logger.info(
                             "[LoadTest::loadIntMapTestWithConfig] Shutting down server instance 3");
                     instance3.shutdown();
 
-                    util::ILogger::getLogger().info("[LoadTest::loadIntMapTestWithConfig] Starting server instance 5");
+                    logger.info("[LoadTest::loadIntMapTestWithConfig] Starting server instance 5");
                     HazelcastServer instance5(*g_srvFactory);
 
                     /*Note: Could not shutdown instance 5 here, since there may be some incomplete synchronization
@@ -153,7 +151,7 @@ namespace hazelcast {
 
                     test.waitForThreadsToFinish();
 
-                    util::ILogger::getLogger().info(
+                    logger.info(
                             "[LoadTest::loadIntMapTestWithConfig] Finished the test successfully :)");
                 }
 
